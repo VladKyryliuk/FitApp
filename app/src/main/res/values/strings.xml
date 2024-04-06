@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">FitApp</string>
+    <string name="nav_description_exercise">Exercise</string>
+     <string name="item_bar_training">Training</string>
+     <string name="item_bar_profile">Profile</string>
+     <string name="item_bar_notification">Notification</string>
+     <string name="item_bar_MyTraining">My Training</string>
+    <string name="description_nav_description_exercise">for tab DescriptionExercise</string>
+     <string name="description_item_training">for item Training</string>
+     <string name="description_item_MyTraining">for item MyTraining</string>
+     <string name="description_item_profile">for item Profile</string>
+    <string name="description_item_notification">for item Notification</string>
+    <string name="singUp_screen_hello">Hey there,</string>
+    <string name="singUp_screen_create_account">Create Account</string>
+    <string name="singUp_screen_welcome_back">Welcome Back</string>
+    <string name="singUp_screen_field_name">Your Name</string>
+
+
+</resources>

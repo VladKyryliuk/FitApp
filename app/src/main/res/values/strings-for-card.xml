@@ -1,0 +1,13 @@
+<resources>
+    <string name="exercise_jump">Прижки з скакалкою</string>
+    <string name="exercise_jump2">Прижки без скакалки</string>
+    <string name="exercise_run">Біг</string>
+    <string name="exercise_push_up">Віджимання</string>
+    <string name="exercise_squatting">Присідання</string>
+    <string name="exercise_stretching">Розтяжка</string>
+
+    <string name="level_easy">легко</string>
+    <string name="level_medium">середньо</string>
+    <string name="level_hard">складно</string>
+
+</resources>
