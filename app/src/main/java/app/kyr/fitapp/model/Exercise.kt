@@ -13,13 +13,13 @@ class Exercise (
 {
     companion object {
 
-        var exercise = Exercise(0, 0, 0, 0)
+       var exercise: Exercise? = null
 
         fun saveExercise(id: Int, imageId: Int, descriptionId: Int, complexityId: Int) {
             exercise = Exercise(id,imageId,descriptionId,complexityId)
         }
 
-        fun returnExercise(): Exercise {
+        fun returnExercise(): Exercise? {
             return exercise
         }
     }

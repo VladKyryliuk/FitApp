@@ -26,21 +26,21 @@ import app.kyr.fitapp.data.Screens
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Notification() {
-    Column {
-        CenterAlignedTopAppBar(
-            title = {
-                Text(
-                    text = stringResource(id = Screens.Notification.screen),
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-
-        )
+//    Column {
+//        CenterAlignedTopAppBar(
+//            title = {
+//                Text(
+//                    text = stringResource(id = Screens.Notification.screen),
+//                    fontSize = 26.sp,
+//                    fontWeight = FontWeight.Bold
+//                )
+//            },
+//            colors = TopAppBarDefaults.topAppBarColors(
+//                containerColor = MaterialTheme.colorScheme.primaryContainer,
+//                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+//            )
+//
+//        )
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
@@ -55,5 +55,5 @@ fun Notification() {
 
             }
         }
-    }
+//    }
 }

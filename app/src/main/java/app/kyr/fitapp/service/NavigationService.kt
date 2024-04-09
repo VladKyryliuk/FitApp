@@ -5,6 +5,7 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.navigation.NavController
 import app.kyr.fitapp.Navigations.BottomNavBar
 import app.kyr.fitapp.Navigations.LeftNavBar
 import app.kyr.fitapp.Navigations.LeftNavBarWithText
@@ -13,31 +14,66 @@ import app.kyr.fitapp.data.Screens
 object NavigationService {
 
     @Composable
-    fun navigateBasedOnWindowSize(currentTab: MutableState<Screens>, windowSize: WindowSizeClass) {
+    fun navigateBasedOnWindowSize(
+        navController: NavController,
+        currentTab: MutableState<Screens>,
+        windowSize: WindowSizeClass,
+        navHostContent: @Composable (NavController) -> Unit,
+        navHostContentForLeftNavBar: @Composable (NavController) -> Unit
+    ) {
 
         when {
             windowSize.heightSizeClass == WindowHeightSizeClass.Compact -> {
-                BottomNavBar(3, currentTab)
+                BottomNavBar(navController, currentTab, navHostContent)
             }
             windowSize.widthSizeClass == WindowWidthSizeClass.Compact -> {
-                BottomNavBar(2, currentTab)
+                BottomNavBar(navController,currentTab,navHostContent)
             }
             windowSize.widthSizeClass == WindowWidthSizeClass.Medium -> {
                 when (windowSize.heightSizeClass) {
-                    WindowHeightSizeClass.Medium -> LeftNavBar(currentTab)
-                    WindowHeightSizeClass.Expanded -> LeftNavBar(currentTab)
+                    WindowHeightSizeClass.Medium -> LeftNavBar(navController,currentTab,navHostContent)
+                    WindowHeightSizeClass.Expanded -> LeftNavBar(navController,currentTab,navHostContent)
                     else -> {}
                 }
             }
             windowSize.widthSizeClass == WindowWidthSizeClass.Expanded -> {
                 when (windowSize.heightSizeClass) {
-                    WindowHeightSizeClass.Medium -> LeftNavBarWithText(currentTab)
-                    WindowHeightSizeClass.Expanded -> LeftNavBarWithText(currentTab)
+                    WindowHeightSizeClass.Medium -> LeftNavBarWithText(navController,currentTab,navHostContentForLeftNavBar)
+                    WindowHeightSizeClass.Expanded -> LeftNavBarWithText(navController,currentTab,navHostContentForLeftNavBar)
                     else -> {}
                 }
             }
             else -> {
             }
+        }
+    }
+}
+
+@Composable
+fun navigateBasedOnWindowSizeReturn(windowSize: WindowSizeClass): Int {
+    return when {
+        windowSize.heightSizeClass == WindowHeightSizeClass.Compact -> {
+            3
+        }
+        windowSize.widthSizeClass == WindowWidthSizeClass.Compact -> {
+            2
+        }
+        windowSize.widthSizeClass == WindowWidthSizeClass.Medium -> {
+            when (windowSize.heightSizeClass) {
+                WindowHeightSizeClass.Medium -> 4
+                WindowHeightSizeClass.Expanded -> 4
+                else -> 0
+            }
+        }
+        windowSize.widthSizeClass == WindowWidthSizeClass.Expanded -> {
+            when (windowSize.heightSizeClass) {
+                WindowHeightSizeClass.Medium -> 2
+                WindowHeightSizeClass.Expanded -> 2
+                else -> 0
+            }
+        }
+        else -> {
+            0
         }
     }
 }

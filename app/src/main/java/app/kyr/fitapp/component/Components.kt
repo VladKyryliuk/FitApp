@@ -32,16 +32,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import app.kyr.fitapp.R
-import app.kyr.fitapp.data.AllTraining
 import app.kyr.fitapp.data.Screens
 import app.kyr.fitapp.model.Exercise
-import app.kyr.fitapp.screens.ExerciseDescription
 import app.kyr.fitapp.service.ProductService
 import app.kyr.fitapp.service.ProductService.Companion.levelColor
+import app.kyr.fitapp.service.ProductService.Companion.openDescription
 
 @Composable
-fun FitVerticalGrid(countExercise:Int,currentTab: MutableState<Screens>, navController: NavController, exerciseList: List<Exercise>,
-                    selectedFilter:String, modifier: Modifier = Modifier) {
+fun FitVerticalGrid(countExercise:Int,
+                    currentTab: MutableState<Screens>,
+                    navController: NavController,
+                    exerciseList: List<Exercise>,
+                    selectedFilter:String,
+                    buttonBack:MutableState<Boolean>,
+                    blockNavForDescription:MutableState<Boolean>,
+                    selectedExercise:MutableState<Exercise?>,
+                    selectedExercise2:MutableState<Exercise?>
+) {
 
     val filteredList = when (selectedFilter) {
         "All" -> exerciseList
@@ -60,7 +67,11 @@ fun FitVerticalGrid(countExercise:Int,currentTab: MutableState<Screens>, navCont
             CardItem(
                 exercises = exercise,
                 navController = navController,
-                currentTab
+                currentTab,
+                buttonBack,
+                blockNavForDescription,
+                selectedExercise,
+                selectedExercise2
             )
         }
     }
@@ -68,47 +79,52 @@ fun FitVerticalGrid(countExercise:Int,currentTab: MutableState<Screens>, navCont
 
 
 @Composable
-fun DescriptionExercise(exercises: Exercise) {
-    Column {
-        Column (
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.LightGray) ,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = exercises.imageId),
-                contentDescription = stringResource(id = exercises.descriptionId),
+fun DescriptionExercise(exercises: Exercise?) {
+    if (exercises != null) {
+        Column {
+            Column (
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
-                contentScale = ContentScale.Crop
-            )
-            Text(
-                text = stringResource(id = exercises.descriptionId),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 5.dp),
-                style = TextStyle(
-                    textAlign = TextAlign.Center,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    .fillMaxSize()
+                    .background(Color.LightGray) ,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = exercises.imageId),
+                    contentDescription = stringResource(id = exercises.descriptionId),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    contentScale = ContentScale.Crop
                 )
-            )
-            Text(
-                text = stringResource(id = exercises.complexityId),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 3.dp, bottom = 2.dp),
-                style = TextStyle(
-                    textAlign = TextAlign.Center,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.W500,
-                    color = levelColor(exercises)
-
+                Text(
+                    text = stringResource(id = exercises.descriptionId),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 5.dp),
+                    style = TextStyle(
+                        textAlign = TextAlign.Center,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
                 )
-            )
+                Text(
+                    text = stringResource(id = exercises.complexityId),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 3.dp, bottom = 2.dp),
+                    style = TextStyle(
+                        textAlign = TextAlign.Center,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.W500,
+                        color = levelColor(exercises)
+                    )
+                )
+            }
+        }
+    } else {
+        // Показати пустий екран, наприклад, звичайний Column без дітей
+        Column(modifier = Modifier.fillMaxSize()) {
         }
     }
 }
@@ -118,19 +134,27 @@ fun DescriptionExercise(exercises: Exercise) {
 fun CardItem(
     exercises:Exercise,
     navController: NavController,
-    currentTab: MutableState<Screens>
+    currentTab: MutableState<Screens>,
+    buttonBack: MutableState<Boolean>,
+    blockNavForDescription:MutableState<Boolean>,
+    selectedExercise:MutableState<Exercise?>,
+    selectedExercise2:MutableState<Exercise?>
     ){
-    var description: String = stringResource(id = Screens.exercise.screen)
+    val description: String = stringResource(id = Screens.exercise.screen)
     Card ( modifier = Modifier
         .height(160.dp)
         .width(150.dp)
         .clickable {
-            currentTab.value = Screens.exercise
-
-            navController.navigate(description)
-
-            Exercise.saveExercise(exercises.id, exercises.imageId,exercises.descriptionId,exercises.complexityId)
-
+            openDescription(
+                currentTab,
+                buttonBack,
+                blockNavForDescription,
+                selectedExercise,
+                selectedExercise2,
+                navController,
+                description,
+                exercises
+            )
         }
     ) {
         Column (
@@ -189,61 +213,6 @@ fun CardItem(
 }
 
 
-//@Composable
-//fun MyDropDownMenu(showMenu: Boolean, filter1: String, filter2: String, currentTab: Screens) {
-//    DropdownMenu(
-//        expanded = showMenu,
-//        onDismissRequest = { showMenu = false },
-//        modifier = Modifier.width(70.dp)
-//    ) {
-//        DropdownMenuItem(
-//            text = { Text(text = "All") },
-//            onClick = {
-//                if (currentTab == Screens.Training) {
-//                    filter1 = "All"
-//                }
-//                if(currentTab == Screens.MyTraining) {
-//                    filter2 = "All"
-//                }
-//
-//            }
-//        )
-//        DropdownMenuItem(
-//            text = { Text(text = "Hard") },
-//            onClick = {
-//                if (currentTab == Screens.Training) {
-//                    filter1 = "Hard"
-//                }
-//                if(currentTab == Screens.MyTraining) {
-//                    filter2 = "Hard"
-//                }
-//            }
-//        )
-//        DropdownMenuItem(
-//            text = { Text(text = "Middle") },
-//            onClick = {
-//                if (currentTab == Screens.Training) {
-//                    filter1 = "Middle"
-//                }
-//                if(currentTab == Screens.MyTraining) {
-//                    filter2 = "Middle"
-//                }
-//            }
-//        )
-//        DropdownMenuItem(
-//            text = { Text(text = "Easy") },
-//            onClick = {
-//                if (currentTab == Screens.Training) {
-//                    filter1 = "Easy"
-//                }
-//                if(currentTab == Screens.MyTraining) {
-//                    filter2 = "Easy"
-//                }
-//            }
-//        )
-//    }
-//}
-
 
 @Composable
 @Preview(showSystemUi = true)
@@ -255,23 +224,3 @@ fun PreviewDescriptionExercise() {
         R.string.level_medium
     ))
 }
-
-//@Composable
-//@Preview(showSystemUi = true)
-//fun PreviewCardItem() {
-//    CardItem(
-//        Exercise (
-//            R.drawable.jumping,
-//            R.string.exercise_jump,
-//            R.string.level_medium
-//        )
-//        ,
-//        onItemClick =
-//    )
-//}
-
-//@Composable
-//@Preview(showSystemUi = true)
-//fun PreviewItemList() {
-//   FitVerticalGrid(exerciseList = AllTraining().loadFitsInfo(), selectedFilter = "Hard")
-//}

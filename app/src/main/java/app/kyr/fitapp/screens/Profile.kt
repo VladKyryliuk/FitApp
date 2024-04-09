@@ -77,20 +77,20 @@ fun Profile( profileViewModel: ProfileViewModel) {
             .verticalScroll(rememberScrollState()),
 
     ) {
-        CenterAlignedTopAppBar(
-            title = {
-                Text(
-                    text = stringResource(id = Screens.Profile.screen),
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-
-        )
+//        CenterAlignedTopAppBar(
+//            title = {
+//                Text(
+//                    text = stringResource(id = Screens.Profile.screen),
+//                    fontSize = 26.sp,
+//                    fontWeight = FontWeight.Bold
+//                )
+//            },
+//            colors = TopAppBarDefaults.topAppBarColors(
+//                containerColor = MaterialTheme.colorScheme.primaryContainer,
+//                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+//            )
+//
+//        )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

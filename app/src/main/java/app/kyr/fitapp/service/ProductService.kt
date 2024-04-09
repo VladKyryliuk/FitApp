@@ -1,6 +1,8 @@
 package app.kyr.fitapp.service
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavController
 import app.kyr.fitapp.R
 import app.kyr.fitapp.data.Screens
 
@@ -28,6 +30,30 @@ class ProductService {
 //            }
 //        }
 
+
+        fun openDescription(currentTab: MutableState<Screens>, buttonBack: MutableState<Boolean>,
+                            blockNavForDescription:MutableState<Boolean>,
+                            selectedExercise:MutableState<Exercise?>,
+                            selectedExercise2:MutableState<Exercise?>,
+                            navController: NavController,
+                            location:String,
+                            exercises: Exercise
+        ) {
+               if (blockNavForDescription.value == true) {
+                   buttonBack.value = true
+                   navController.navigate(location)
+                   selectedExercise.value = exercises
+                   selectedExercise2.value = exercises
+               }
+               else {
+                   if (currentTab.value == Screens.Training) {
+                       selectedExercise.value = exercises
+                   }
+                   if (currentTab.value == Screens.MyTraining) {
+                       selectedExercise2.value = exercises
+                   }
+               }
+        }
 
         fun levelColor(exercises: Exercise): Color {
             return when (exercises.complexityId) {

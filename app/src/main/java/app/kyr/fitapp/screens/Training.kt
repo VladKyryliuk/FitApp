@@ -34,81 +34,22 @@ import androidx.navigation.NavController
 import app.kyr.fitapp.component.FitVerticalGrid
 import app.kyr.fitapp.data.AllTraining
 import app.kyr.fitapp.data.Screens
+import app.kyr.fitapp.model.Exercise
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Training(countExercise:Int,currentTab:MutableState<Screens>, navController: NavController) {
-    var showMenu by remember {
-        mutableStateOf(false)
-    }
+fun Training(
+        filter1:String,countExercise:Int,
+        currentTab:MutableState<Screens>,
+        navController: NavController,
+        buttonBack:MutableState<Boolean>,
+        blockNavForDescription:MutableState<Boolean>,
+        selectedExercise: MutableState<Exercise?>,
+        selectedExercise2:MutableState<Exercise?>
 
-    var filter by remember {
-        mutableStateOf("All")
-    }
+     ) {
 
-
-    Column {
-//        TopBar
-        CenterAlignedTopAppBar(
-            title = {
-                Text(
-                    text = stringResource(id = Screens.Training.screen),
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            },
-
-
-            actions = {
-
-                IconButton(onClick = { showMenu = !showMenu }) {
-                    Icon(
-                        imageVector = Icons.Sharp.List,
-                        contentDescription = "Item for Filter",
-                        modifier = Modifier
-                            .padding(horizontal = 5.dp, vertical = 5.dp)
-                            .size(35.dp),
-                    )
-                }
-                DropdownMenu(
-                    expanded = showMenu,
-                    onDismissRequest = { showMenu = false },
-                    modifier = Modifier.width(70.dp)
-                ) {
-                    DropdownMenuItem(
-                        text = { Text(text = "All") },
-                        onClick = {
-                            filter = "All"
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text(text = "Hard") },
-                        onClick = {
-                            filter = "Hard"
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text(text = "Middle") },
-                        onClick = {
-                            filter = "Middle"
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text(text = "Easy") },
-                        onClick = {
-                            filter = "Easy"
-                        }
-                    )
-                }
-
-
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        )
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
@@ -122,10 +63,14 @@ fun Training(countExercise:Int,currentTab:MutableState<Screens>, navController: 
                     currentTab,
                     navController,
                     exerciseList = AllTraining().loadFitsInfo(),
-                    selectedFilter = filter
+                    selectedFilter = filter1,
+                    buttonBack = buttonBack,
+                    blockNavForDescription,
+                    selectedExercise,
+                    selectedExercise2
                 )
 
             }
         }
-    }
+//    }
 }

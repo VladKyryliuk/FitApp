@@ -1,8 +1,9 @@
 package app.kyr.fitapp.app
 
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,37 +18,36 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import app.kyr.fitapp.Navigations.BottomNavBar
 import app.kyr.fitapp.data.Screens
+import app.kyr.fitapp.model.Exercise
 import app.kyr.fitapp.model.ProfileViewModel
 import app.kyr.fitapp.screens.ExerciseDescription
+import app.kyr.fitapp.screens.ExerciseDescriptionForMyTraining
 import app.kyr.fitapp.screens.MyTraining
 import app.kyr.fitapp.screens.Notification
 import app.kyr.fitapp.screens.Profile
 import app.kyr.fitapp.screens.Training
 import app.kyr.fitapp.service.NavigationService
+import app.kyr.fitapp.service.navigateBasedOnWindowSizeReturn
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,9 +68,23 @@ fun FitApp(windowSizeClass: WindowSizeClass) {
     var filter2 by remember {
         mutableStateOf("All")
     }
+
+    var buttonBack = remember {
+        mutableStateOf(false)
+    }
+
+    val blockNavForDescription = remember {
+        mutableStateOf(false)
+    }
+
     val navigationController = rememberNavController()
 
-
+    val selectedExercise = remember {
+        mutableStateOf<Exercise?>(null)
+    }
+    val selectedExercise2 = remember {
+        mutableStateOf<Exercise?>(null)
+    }
 
 
     Column(
@@ -88,9 +102,11 @@ fun FitApp(windowSizeClass: WindowSizeClass) {
             },
 
             navigationIcon = {
-                if (currentTab.value == Screens.exercise) {
+               val nav =  stringResource(id = currentTab.value.screen)
+                if (buttonBack.value != false) {
                     IconButton(onClick = {
-                        navigationController.navigate("Training")
+                        navigationController.navigate(nav)
+                        buttonBack.value = false
                     }
                     ) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
@@ -99,7 +115,9 @@ fun FitApp(windowSizeClass: WindowSizeClass) {
             },
 
             actions = {
-                val shouldShowFilterIcon = currentTab.value == Screens.Training || currentTab.value == Screens.MyTraining
+                val shouldShowFilterIcon =
+                    (currentTab.value == Screens.Training || currentTab.value == Screens.MyTraining)
+                            && !buttonBack.value
                 if (shouldShowFilterIcon) {
                     IconButton(onClick = { showMenu = !showMenu }) {
                         Icon(
@@ -170,12 +188,184 @@ fun FitApp(windowSizeClass: WindowSizeClass) {
             )
         )
 
-
-//        BottomBar
-//            BottomNavBar(currentTab = currentTab)
-
-        NavigationService.navigateBasedOnWindowSize(currentTab = currentTab, windowSize = windowSizeClass)
-
+            NavigationService.navigateBasedOnWindowSize (
+                navigationController,
+                currentTab = currentTab,
+                windowSize = windowSizeClass,
+                navHostContent = {
+                    NavHostForBottomAppBar(
+                        modifier = Modifier.padding(0.dp),
+                        navigationController = navigationController,
+                        currentTab = currentTab,
+                        windowSizeClass = windowSizeClass,
+                        filter1 = filter1,
+                        filter2 = filter2,
+                        buttonBack = buttonBack,
+                        blockNavForDescription = blockNavForDescription,
+                        selectedExercise,
+                        selectedExercise2
+                    )
+                },
+                navHostContentForLeftNavBar = {
+                    NavHostForLeftNavBarWithText(
+                        modifier = Modifier.padding(0.dp),
+                        navigationController = navigationController,
+                        currentTab = currentTab,
+                        windowSizeClass = windowSizeClass,
+                        filter1 = filter1,
+                        filter2 = filter2,
+                        buttonBack = buttonBack,
+                        blockNavForDescription = blockNavForDescription,
+                        selectedExercise,
+                        selectedExercise2
+                    )
+                }
+            )
     }
 }
 
+@Composable
+fun NavHostForBottomAppBar(
+    modifier: Modifier,
+    navigationController: NavController,
+    currentTab: MutableState<Screens>,
+    windowSizeClass: WindowSizeClass,
+    filter1: String,
+    filter2: String,
+    buttonBack:MutableState<Boolean>,
+    blockNavForDescription:MutableState<Boolean>,
+    selectedExercise: MutableState<Exercise?>,
+    selectedExercise2: MutableState<Exercise?>
+) {
+    val profileViewModel = remember { ProfileViewModel() }
+    val training: String = stringResource(id = Screens.Training.screen)
+    val myTraining: String = stringResource(id = Screens.MyTraining.screen)
+    val notification: String = stringResource(id = Screens.Notification.screen)
+    val profile: String = stringResource(id = Screens.Profile.screen)
+    val Exersice: String = stringResource(id = Screens.exercise.screen)
+    blockNavForDescription.value = true
+    NavHost(
+        modifier = modifier,
+        navController = navigationController as NavHostController,
+        startDestination = stringResource(id = Screens.Training.screen),
+    ) {
+        composable(training) {
+            Training(
+                filter1,
+                countExercise = navigateBasedOnWindowSizeReturn(windowSizeClass),
+                currentTab,
+                navigationController,
+                buttonBack,
+                blockNavForDescription,
+                selectedExercise,
+                selectedExercise2
+            )
+        }
+        composable(myTraining) {
+            MyTraining(
+                filter2,
+                countExercise = navigateBasedOnWindowSizeReturn(windowSizeClass),
+                currentTab,
+                navigationController,
+                buttonBack,
+                blockNavForDescription,
+                selectedExercise,
+                selectedExercise2
+            )
+        }
+        composable(notification) {
+            Notification()
+        }
+        composable(profile) {
+            Profile(
+                profileViewModel
+            )
+        }
+        composable(Exersice){
+            ExerciseDescription(
+                selectedExercise = selectedExercise.value,
+            )
+        }
+    }
+}
+
+@Composable
+fun NavHostForLeftNavBarWithText(
+    modifier: Modifier,
+    navigationController: NavController,
+    currentTab: MutableState<Screens>,
+    windowSizeClass: WindowSizeClass,
+    filter1: String,
+    filter2: String,
+    buttonBack: MutableState<Boolean>,
+    blockNavForDescription:MutableState<Boolean>,
+    selectedExercise: MutableState<Exercise?>,
+    selectedExercise2: MutableState<Exercise?>
+) {
+    val profileViewModel = remember { ProfileViewModel() }
+    val training: String = stringResource(id = Screens.Training.screen)
+    val myTraining: String = stringResource(id = Screens.MyTraining.screen)
+    val notification: String = stringResource(id = Screens.Notification.screen)
+    val profile: String = stringResource(id = Screens.Profile.screen)
+    val Exersice: String = stringResource(id = Screens.exercise.screen)
+    NavHost(
+        modifier = modifier,
+        navController = navigationController as NavHostController,
+        startDestination = stringResource(id = Screens.Training.screen),
+    ) {
+        composable(training) {
+            Row {
+                Box(modifier = Modifier. width(500.dp)) {
+                    Training(
+                        filter1,
+                        countExercise = navigateBasedOnWindowSizeReturn(windowSizeClass),
+                        currentTab,
+                        navigationController,
+                        buttonBack,
+                        blockNavForDescription,
+                        selectedExercise,
+                        selectedExercise2
+                    )
+                }
+                Box(modifier = Modifier. width(500.dp)) {
+                    ExerciseDescription(
+                        selectedExercise = selectedExercise.value,
+                    )
+                }
+            }
+        }
+        composable(myTraining) {
+            Row (modifier = Modifier .fillMaxSize()) {
+                Box(modifier = Modifier. width(500.dp)) {
+                    MyTraining(
+                        filter2,
+                        countExercise = navigateBasedOnWindowSizeReturn(windowSizeClass),
+                        currentTab,
+                        navigationController,
+                        buttonBack,
+                        blockNavForDescription,
+                        selectedExercise,
+                        selectedExercise2
+                    )
+                }
+                Box(modifier = Modifier. width(500.dp)) {
+                    ExerciseDescriptionForMyTraining(selectedExercise2 = selectedExercise2.value)
+
+                }
+            }
+        }
+        composable(notification) {
+            Notification()
+        }
+        composable(profile) {
+            Profile(
+                profileViewModel
+            )
+        }
+        composable(Exersice){
+            ExerciseDescription(
+                selectedExercise = selectedExercise.value,
+            )
+        }
+    }
+}
