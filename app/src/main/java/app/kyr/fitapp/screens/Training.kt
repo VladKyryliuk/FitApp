@@ -50,7 +50,7 @@ fun Training(
 
      ) {
 
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize().padding(top = 10.dp,start = 10.dp, end = 10.dp)) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()

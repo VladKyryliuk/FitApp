@@ -49,7 +49,7 @@ fun MyTraining(
     selectedExercise:MutableState<Exercise?>,
     selectedExercise2:MutableState<Exercise?>
     ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().padding(top = 10.dp,start = 45.dp, end = 10.dp)) {
         Column(
             modifier = Modifier
                 .fillMaxSize()

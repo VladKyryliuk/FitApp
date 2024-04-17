@@ -113,6 +113,7 @@ fun LeftNavBarWithText(
     val coroutineScope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Open)
     val myTraining: String = stringResource(id = Screens.MyTraining.screen)
+
         PermanentNavigationDrawer(
             drawerContent = {
                 Column(modifier = Modifier
@@ -187,13 +188,13 @@ fun LeftNavBarWithText(
 @Composable
 fun LeftNavBar(navController: NavController,currentTab: MutableState<Screens>,
                navHostContent: @Composable (NavController) -> Unit) {
-    Surface{
-
+    Surface {
         navHostContent(navController)
         NavigationRail(
             modifier = Modifier
-                .width(60.dp)
+                .width(45.dp)
                 .background(MaterialTheme.colorScheme.primaryContainer)
+                .fillMaxHeight()
                 .padding(top = 250.dp),
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             content = {

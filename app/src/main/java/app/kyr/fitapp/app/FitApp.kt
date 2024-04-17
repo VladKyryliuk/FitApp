@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -315,7 +316,7 @@ fun NavHostForLeftNavBarWithText(
     ) {
         composable(training) {
             Row {
-                Box(modifier = Modifier. width(500.dp)) {
+                Box(modifier = Modifier.fillMaxWidth(0.5f)) {
                     Training(
                         filter1,
                         countExercise = navigateBasedOnWindowSizeReturn(windowSizeClass),
@@ -327,7 +328,7 @@ fun NavHostForLeftNavBarWithText(
                         selectedExercise2
                     )
                 }
-                Box(modifier = Modifier. width(500.dp)) {
+                Box(modifier = Modifier.fillMaxWidth(1f)) {
                     ExerciseDescription(
                         selectedExercise = selectedExercise.value,
                     )
@@ -335,8 +336,8 @@ fun NavHostForLeftNavBarWithText(
             }
         }
         composable(myTraining) {
-            Row (modifier = Modifier .fillMaxSize()) {
-                Box(modifier = Modifier. width(500.dp)) {
+            Row{
+                Box(modifier = Modifier.fillMaxWidth(0.5f)) {
                     MyTraining(
                         filter2,
                         countExercise = navigateBasedOnWindowSizeReturn(windowSizeClass),
@@ -348,7 +349,7 @@ fun NavHostForLeftNavBarWithText(
                         selectedExercise2
                     )
                 }
-                Box(modifier = Modifier. width(500.dp)) {
+                Box(modifier = Modifier.fillMaxWidth(1f)) {
                     ExerciseDescriptionForMyTraining(selectedExercise2 = selectedExercise2.value)
 
                 }

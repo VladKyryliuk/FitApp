@@ -60,8 +60,8 @@ fun navigateBasedOnWindowSizeReturn(windowSize: WindowSizeClass): Int {
         }
         windowSize.widthSizeClass == WindowWidthSizeClass.Medium -> {
             when (windowSize.heightSizeClass) {
-                WindowHeightSizeClass.Medium -> 4
-                WindowHeightSizeClass.Expanded -> 4
+                WindowHeightSizeClass.Medium -> 3
+                WindowHeightSizeClass.Expanded -> 3
                 else -> 0
             }
         }
