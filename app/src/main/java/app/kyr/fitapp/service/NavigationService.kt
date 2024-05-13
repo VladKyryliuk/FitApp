@@ -1,5 +1,6 @@
 package app.kyr.fitapp.service
 
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -13,6 +14,7 @@ import app.kyr.fitapp.data.Screens
 
 object NavigationService {
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Composable
     fun navigateBasedOnWindowSize(
         navController: NavController,
@@ -50,14 +52,17 @@ object NavigationService {
 }
 
 @Composable
-fun navigateBasedOnWindowSizeReturn(windowSize: WindowSizeClass): Int {
+fun navigateBasedOnWindowSizeReturn(windowSize: WindowSizeClass?): Int {
+if (windowSize != null) {
     return when {
         windowSize.heightSizeClass == WindowHeightSizeClass.Compact -> {
             3
         }
+
         windowSize.widthSizeClass == WindowWidthSizeClass.Compact -> {
             2
         }
+
         windowSize.widthSizeClass == WindowWidthSizeClass.Medium -> {
             when (windowSize.heightSizeClass) {
                 WindowHeightSizeClass.Medium -> 3
@@ -65,6 +70,7 @@ fun navigateBasedOnWindowSizeReturn(windowSize: WindowSizeClass): Int {
                 else -> 0
             }
         }
+
         windowSize.widthSizeClass == WindowWidthSizeClass.Expanded -> {
             when (windowSize.heightSizeClass) {
                 WindowHeightSizeClass.Medium -> 2
@@ -72,8 +78,13 @@ fun navigateBasedOnWindowSizeReturn(windowSize: WindowSizeClass): Int {
                 else -> 0
             }
         }
+
         else -> {
             0
         }
+    }
+}
+    else {
+        return 2
     }
 }

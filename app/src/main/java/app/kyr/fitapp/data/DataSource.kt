@@ -1,9 +1,7 @@
 package app.kyr.fitapp.data
 
-import android.content.Context
 import app.kyr.fitapp.R
 import app.kyr.fitapp.model.Exercise
-import com.google.gson.Gson
 
 
 class AllTraining {
@@ -14,14 +12,14 @@ class AllTraining {
             Exercise(3,R.drawable.running, R.string.exercise_run, R.string.level_medium),
             Exercise(4,R.drawable.push_up, R.string.exercise_push_up, R.string.level_hard),
             Exercise(5,R.drawable.squatting, R.string.exercise_squatting, R.string.level_medium),
-            Exercise(6,R.drawable.squatting, R.string.exercise_squatting, R.string.level_medium),
-            Exercise(7,R.drawable.squatting, R.string.exercise_squatting, R.string.level_medium),
-            Exercise(8,R.drawable.squatting, R.string.exercise_squatting, R.string.level_medium),
-            Exercise(9,R.drawable.squatting, R.string.exercise_squatting, R.string.level_medium),
-            Exercise(10,R.drawable.squatting, R.string.exercise_squatting, R.string.level_medium),
-            Exercise(11,R.drawable.squatting, R.string.exercise_squatting, R.string.level_medium),
-            Exercise(12,R.drawable.squatting, R.string.exercise_squatting, R.string.level_medium),
-            Exercise(13,R.drawable.squatting, R.string.exercise_squatting, R.string.level_medium),
+//            Exercise(6,R.drawable.squatting, R.string.exercise_squatting, R.string.level_medium),
+//            Exercise(7,R.drawable.squatting, R.string.exercise_squatting, R.string.level_medium),
+//            Exercise(8,R.drawable.squatting, R.string.exercise_squatting, R.string.level_medium),
+//            Exercise(9,R.drawable.squatting, R.string.exercise_squatting, R.string.level_medium),
+//            Exercise(10,R.drawable.squatting, R.string.exercise_squatting, R.string.level_medium),
+//            Exercise(11,R.drawable.squatting, R.string.exercise_squatting, R.string.level_medium),
+//            Exercise(12,R.drawable.squatting, R.string.exercise_squatting, R.string.level_medium),
+//            Exercise(13,R.drawable.squatting, R.string.exercise_squatting, R.string.level_medium),
             Exercise(14,R.drawable.stretching, R.string.exercise_stretching, R.string.level_hard)
         )
     }

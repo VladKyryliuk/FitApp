@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.sharp.List
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,6 +40,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import app.kyr.fitapp.data.AllTraining
 import app.kyr.fitapp.data.Screens
 import app.kyr.fitapp.model.Exercise
 import app.kyr.fitapp.model.ProfileViewModel
@@ -48,7 +51,12 @@ import app.kyr.fitapp.screens.Notification
 import app.kyr.fitapp.screens.Profile
 import app.kyr.fitapp.screens.Training
 import app.kyr.fitapp.service.NavigationService
+import app.kyr.fitapp.service.ProductService
 import app.kyr.fitapp.service.navigateBasedOnWindowSizeReturn
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,11 +70,11 @@ fun FitApp(windowSizeClass: WindowSizeClass) {
         mutableStateOf(false)
     }
 
-    var filter1 by remember {
+    var filter1  = remember {
         mutableStateOf("All")
     }
 
-    var filter2 by remember {
+    var filter2 = remember {
         mutableStateOf("All")
     }
 
@@ -85,6 +93,10 @@ fun FitApp(windowSizeClass: WindowSizeClass) {
     }
     val selectedExercise2 = remember {
         mutableStateOf<Exercise?>(null)
+    }
+
+    var isLoading = remember {
+        mutableStateOf(false)
     }
 
 
@@ -137,45 +149,64 @@ fun FitApp(windowSizeClass: WindowSizeClass) {
                         DropdownMenuItem(
                             text = { Text(text = "All") },
                             onClick = {
-                                if (currentTab.value == Screens.Training) {
-                                    filter1 = "All"
+                                isLoading.value = true
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    delay(1500)
+                                    ProductService.sortedExercise(
+                                        "All",
+                                        filter1,
+                                        filter2,
+                                        currentTab
+                                    )
+                                    isLoading.value = false
                                 }
-                                if(currentTab.value == Screens.MyTraining) {
-                                    filter2 = "All"
-                                }
-
                             }
                         )
                         DropdownMenuItem(
                             text = { Text(text = "Hard") },
                             onClick = {
-                                if (currentTab.value == Screens.Training) {
-                                    filter1 = "Hard"
-                                }
-                                if(currentTab.value == Screens.MyTraining) {
-                                    filter2 = "Hard"
+                                isLoading.value = true
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    delay(1500)
+                                    ProductService.sortedExercise(
+                                        "Hard",
+                                        filter1,
+                                        filter2,
+                                        currentTab
+                                    )
+                                    isLoading.value = false
                                 }
                             }
                         )
                         DropdownMenuItem(
                             text = { Text(text = "Middle") },
                             onClick = {
-                                if (currentTab.value == Screens.Training) {
-                                    filter1 = "Middle"
-                                }
-                                if(currentTab.value == Screens.MyTraining) {
-                                    filter2 = "Middle"
+                                isLoading.value = true
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    delay(1500)
+                                    ProductService.sortedExercise(
+                                        "Middle",
+                                        filter1,
+                                        filter2,
+                                        currentTab
+                                    )
+                                    isLoading.value = false
                                 }
                             }
                         )
                         DropdownMenuItem(
                             text = { Text(text = "Easy") },
                             onClick = {
-                                if (currentTab.value == Screens.Training) {
-                                    filter1 = "Easy"
-                                }
-                                if(currentTab.value == Screens.MyTraining) {
-                                    filter2 = "Easy"
+                                isLoading.value = true
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    delay(1500)
+                                    ProductService.sortedExercise(
+                                        "Easy",
+                                        filter1,
+                                        filter2,
+                                        currentTab
+                                    )
+                                    isLoading.value = false
                                 }
                             }
                         )
@@ -199,12 +230,13 @@ fun FitApp(windowSizeClass: WindowSizeClass) {
                         navigationController = navigationController,
                         currentTab = currentTab,
                         windowSizeClass = windowSizeClass,
-                        filter1 = filter1,
-                        filter2 = filter2,
+                        filter1 = filter1.value,
+                        filter2 = filter2.value,
                         buttonBack = buttonBack,
                         blockNavForDescription = blockNavForDescription,
                         selectedExercise,
-                        selectedExercise2
+                        selectedExercise2,
+                        isLoading
                     )
                 },
                 navHostContentForLeftNavBar = {
@@ -213,15 +245,31 @@ fun FitApp(windowSizeClass: WindowSizeClass) {
                         navigationController = navigationController,
                         currentTab = currentTab,
                         windowSizeClass = windowSizeClass,
-                        filter1 = filter1,
-                        filter2 = filter2,
+                        filter1 = filter1.value,
+                        filter2 = filter2.value,
                         buttonBack = buttonBack,
                         blockNavForDescription = blockNavForDescription,
                         selectedExercise,
-                        selectedExercise2
+                        selectedExercise2,
+                        isLoading
                     )
                 }
             )
+    }
+}
+
+
+@Composable
+fun LoadingIndicator(isLoading: Boolean) {
+    if (isLoading) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
     }
 }
 
@@ -230,13 +278,14 @@ fun NavHostForBottomAppBar(
     modifier: Modifier,
     navigationController: NavController,
     currentTab: MutableState<Screens>,
-    windowSizeClass: WindowSizeClass,
+    windowSizeClass: WindowSizeClass?,
     filter1: String,
     filter2: String,
     buttonBack:MutableState<Boolean>,
     blockNavForDescription:MutableState<Boolean>,
     selectedExercise: MutableState<Exercise?>,
-    selectedExercise2: MutableState<Exercise?>
+    selectedExercise2: MutableState<Exercise?>,
+    isLoading: MutableState<Boolean>
 ) {
     val profileViewModel = remember { ProfileViewModel() }
     val training: String = stringResource(id = Screens.Training.screen)
@@ -259,7 +308,9 @@ fun NavHostForBottomAppBar(
                 buttonBack,
                 blockNavForDescription,
                 selectedExercise,
-                selectedExercise2
+                selectedExercise2,
+                AllTraining().loadFitsInfo(),
+                isLoading
             )
         }
         composable(myTraining) {
@@ -271,7 +322,8 @@ fun NavHostForBottomAppBar(
                 buttonBack,
                 blockNavForDescription,
                 selectedExercise,
-                selectedExercise2
+                selectedExercise2,
+                ProductService.getListExercises()
             )
         }
         composable(notification) {
@@ -301,7 +353,8 @@ fun NavHostForLeftNavBarWithText(
     buttonBack: MutableState<Boolean>,
     blockNavForDescription:MutableState<Boolean>,
     selectedExercise: MutableState<Exercise?>,
-    selectedExercise2: MutableState<Exercise?>
+    selectedExercise2: MutableState<Exercise?>,
+    isLoading: MutableState<Boolean>
 ) {
     val profileViewModel = remember { ProfileViewModel() }
     val training: String = stringResource(id = Screens.Training.screen)
@@ -325,7 +378,9 @@ fun NavHostForLeftNavBarWithText(
                         buttonBack,
                         blockNavForDescription,
                         selectedExercise,
-                        selectedExercise2
+                        selectedExercise2,
+                        AllTraining().loadFitsInfo(),
+                        isLoading
                     )
                 }
                 Box(modifier = Modifier.fillMaxWidth(1f)) {
@@ -346,7 +401,8 @@ fun NavHostForLeftNavBarWithText(
                         buttonBack,
                         blockNavForDescription,
                         selectedExercise,
-                        selectedExercise2
+                        selectedExercise2,
+                        ProductService.getListExercises()
                     )
                 }
                 Box(modifier = Modifier.fillMaxWidth(1f)) {

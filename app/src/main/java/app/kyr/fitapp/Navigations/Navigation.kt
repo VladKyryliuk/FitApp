@@ -27,6 +27,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -34,30 +35,6 @@ import androidx.navigation.NavController
 import app.kyr.fitapp.data.Screens
 import app.kyr.fitapp.ui.theme.LightBlue
 import kotlinx.coroutines.launch
-
-//@Composable
-//fun NavigationBar(currentTab: MutableState<Screens>) {
-//    androidx.compose.material3.NavigationBar {
-//        Screens.getAllScreens().forEach { tab ->
-//            NavigationBarItem(
-//                selected = tab == currentTab,
-//                onClick = { currentTab.value = tab },
-//                label = { Text(text = stringResource(id = tab.screen)) },
-//                icon = {
-//                    Icon(
-//                        painter = painterResource(tab.icon),
-//                        contentDescription = stringResource(id = tab.descriptionIcon)
-//                    )
-//                },
-//                colors = NavigationBarItemDefaults.colors(
-//                    selectedIconColor = LightBlue,
-//                    indicatorColor = LightGrayPlus,
-//                    selectedTextColor = LightBlue
-//                ),
-//            )
-//        }
-//    }
-//}
 
 @Composable
 fun BottomNavBar(navController: NavController,currentTab: MutableState<Screens>,
@@ -68,6 +45,7 @@ fun BottomNavBar(navController: NavController,currentTab: MutableState<Screens>,
             BottomAppBar(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 modifier = Modifier.height(56.dp)
+                    .testTag("BottomNavBar")
             ) {
                 Screens.getAllScreens().forEach{
                         screens ->
@@ -119,7 +97,8 @@ fun LeftNavBarWithText(
                 Column(modifier = Modifier
                     .width(180.dp)
                     .fillMaxHeight()
-                    .background(MaterialTheme.colorScheme.primaryContainer)) {
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .testTag("LeftNavBarWithText")) {
                     NavigationDrawerItem(
                         modifier = Modifier.padding(top = 50.dp),
                         label = { Text(text = "Training", color= LightBlue) },
@@ -195,7 +174,8 @@ fun LeftNavBar(navController: NavController,currentTab: MutableState<Screens>,
                 .width(45.dp)
                 .background(MaterialTheme.colorScheme.primaryContainer)
                 .fillMaxHeight()
-                .padding(top = 250.dp),
+                .padding(top = 250.dp)
+                .testTag("LeftNavBar"),
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             content = {
                 NavigationRailItem(

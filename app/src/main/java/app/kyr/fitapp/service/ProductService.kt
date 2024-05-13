@@ -5,9 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import app.kyr.fitapp.R
 import app.kyr.fitapp.data.Screens
-
 import app.kyr.fitapp.model.Exercise
-import app.kyr.fitapp.screens.Training
 
 class ProductService {
     companion object{
@@ -21,14 +19,25 @@ class ProductService {
             return listExercise
         }
 
-//        fun filterTab(currentTab:Screens, filter1:String, filter2: String, ex1:String, ex2:String) {
-//            if (currentTab == Screens.Training) {
-//                filter1 = ex1
-//            }
-//            if (currentTab == Screens.MyTraining) {
-//                filter2 = ex2
-//            }
-//        }
+
+        fun sortedExercise(type:String,filter1:MutableState<String>, filter2: MutableState<String>, currentTab:MutableState<Screens>){
+            if (currentTab.value == Screens.Training) {
+                filter1.value = type
+            }
+            if (currentTab.value == Screens.MyTraining){
+                filter2.value = type
+            }
+        }
+
+        fun exerciseLevel(selectedFilter:String, exerciseList:List<Exercise>):List<Exercise> {
+         return when (selectedFilter) {
+                "All" -> exerciseList
+                "Hard" -> exerciseList.filter { it.complexityId == R.string.level_hard }
+                "Middle" -> exerciseList.filter { it.complexityId == R.string.level_medium }
+                "Easy" -> exerciseList.filter { it.complexityId == R.string.level_easy }
+                else -> exerciseList
+            }
+        }
 
 
         fun openDescription(currentTab: MutableState<Screens>, buttonBack: MutableState<Boolean>,
@@ -41,7 +50,7 @@ class ProductService {
         ) {
                if (blockNavForDescription.value == true) {
                    buttonBack.value = true
-                   navController.navigate(location)
+                   navController.navigate(route = location)
                    selectedExercise.value = exercises
                    selectedExercise2.value = exercises
                }

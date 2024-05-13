@@ -35,6 +35,7 @@ import app.kyr.fitapp.R
 import app.kyr.fitapp.data.Screens
 import app.kyr.fitapp.model.Exercise
 import app.kyr.fitapp.service.ProductService
+import app.kyr.fitapp.service.ProductService.Companion.exerciseLevel
 import app.kyr.fitapp.service.ProductService.Companion.levelColor
 import app.kyr.fitapp.service.ProductService.Companion.openDescription
 
@@ -50,13 +51,7 @@ fun FitVerticalGrid(countExercise:Int,
                     selectedExercise2:MutableState<Exercise?>
 ) {
 
-    val filteredList = when (selectedFilter) {
-        "All" -> exerciseList
-        "Hard" -> exerciseList.filter { it.complexityId == R.string.level_hard }
-        "Middle" -> exerciseList.filter { it.complexityId == R.string.level_medium }
-        "Easy" -> exerciseList.filter { it.complexityId == R.string.level_easy }
-        else -> exerciseList
-    }
+    val filteredList = exerciseLevel(selectedFilter,exerciseList)
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(countExercise),
@@ -123,7 +118,6 @@ fun DescriptionExercise(exercises: Exercise?) {
             }
         }
     } else {
-        // Показати пустий екран, наприклад, звичайний Column без дітей
         Column(modifier = Modifier.fillMaxSize()) {
         }
     }
